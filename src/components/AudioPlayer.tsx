@@ -8,6 +8,14 @@ interface AudioPlayerProps {
   audioSrc?: string;
 }
 
+// Calming, gentle acoustic oud/harp pentatonic melody notes (frequencies in Hz)
+const melodyNotes = [
+  220.0, 246.94, 261.63, 293.66, 329.63, 349.23, 392.0, 440.0, 493.88, 523.25,
+];
+const arpeggioPattern = [
+  0, 2, 4, 7, 6, 4, 2, 4, 5, 7, 9, 7, 5, 4, 2, 0,
+];
+
 export function AudioPlayer({ shouldPlay }: AudioPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
@@ -18,14 +26,6 @@ export function AudioPlayer({ shouldPlay }: AudioPlayerProps) {
   const audioCtxRef = useRef<AudioContext | null>(null);
   const synthTimerRef = useRef<NodeJS.Timeout | null>(null);
   const [usingSynth, setUsingSynth] = useState(false);
-
-  // Calming, gentle acoustic oud/harp pentatonic melody notes (frequencies in Hz)
-  const melodyNotes = [
-    220.0, 246.94, 261.63, 293.66, 329.63, 349.23, 392.0, 440.0, 493.88, 523.25,
-  ];
-  const arpeggioPattern = [
-    0, 2, 4, 7, 6, 4, 2, 4, 5, 7, 9, 7, 5, 4, 2, 0,
-  ];
 
   const playSynthesizedMelody = useCallback(() => {
     try {
@@ -80,7 +80,7 @@ export function AudioPlayer({ shouldPlay }: AudioPlayerProps) {
     } catch (e) {
       console.warn("Web Audio API not supported or suspended:", e);
     }
-  }, [isMuted, melodyNotes, arpeggioPattern]);
+  }, [isMuted]);
 
   const stopSynthesizedMelody = useCallback(() => {
     if (synthTimerRef.current) {

@@ -1,4 +1,4 @@
-import { Pool, QueryResult, QueryResultRow } from "pg";
+import { Pool, QueryResult } from "pg";
 import fs from "fs";
 import path from "path";
 
