@@ -13,7 +13,7 @@ export function FooterSection() {
       <ScrollReveal delay={150} className="max-w-4xl mx-auto">
         <div className="p-8 sm:p-14 rounded-3xl bg-[#FAF7F0] border border-[#DDCFB9] warm-card-shadow transition-all duration-300 hover:border-[#b89b63] hover:shadow-xl">
           
-          {/* “See You On 5-01-2027” */}
+          {/* “See You On 10-01-2027” */}
           <span className="font-sans text-xs uppercase tracking-[0.25em] text-[#7A7366] font-semibold block mb-3">
             {footer.heading}
           </span>
@@ -25,7 +25,7 @@ export function FooterSection() {
 
           <OrnamentalDivider variant="gold" className="my-4" />
 
-          {/* “5-01-2027 · The Beginning of Forever” */}
+          {/* “10-01-2027 · The Beginning of Forever” */}
           <p className="font-cormorant italic text-lg sm:text-xl text-[#29251F] tracking-wider my-2">
             {footer.subheading}
           </p>

@@ -1,10 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import { saveRsvp, checkExistingRsvp, getRsvpStats } from "@/lib/db";
 
+// Ensure this route handler is executed dynamically on every request in production/serverless
+export const dynamic = "force-dynamic";
+
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { guest_name, attendance, guest_count, message } = body;
+    let body;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json(
+        { error: "Invalid request payload. Please submit valid form data." },
+        { status: 400 }
+      );
+    }
+
+    const { guest_name, attendance, guest_count, message } = body || {};
 
     // Validation
     if (!guest_name || typeof guest_name !== "string" || guest_name.trim().length < 2) {
@@ -76,7 +88,7 @@ export async function POST(request: NextRequest) {
     const successMessage =
       attendance === "attending"
         ? `Alhamdulillah! Jazāk Allāhu Khayran, ${guest_name.trim()}. We eagerly look forward to welcoming you and your family to celebrate our special day!`
-        : `Jazāk Allāhu Khayran, ${guest_name.trim()}. We will miss your physical presence, but we treasure your heartfelt prayers and duas for our new journey.`;
+        : `Please remember us in your duas and pray for our marriage.`;
 
     return NextResponse.json({
       success: true,

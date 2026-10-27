@@ -29,10 +29,10 @@ export interface WeddingConfig {
     homeSubtitle: string; // "Two Souls · One Journey · Infinite Love"
   };
   event: {
-    dateDots: string; // "5-01-2027"
-    dateBullets: string; // "5-01-2027"
-    dateFormatted: string; // "5 January 2027"
-    targetIsoDate: string; // "2027-01-05T10:30:00+05:30"
+    dateDots: string; // "10-01-2027"
+    dateBullets: string; // "10-01-2027"
+    dateFormatted: string; // "10 January 2027"
+    targetIsoDate: string; // "2027-01-10T10:30:00+05:30"
     time: string; // "10:30 AM Onwards"
     venueName: string; // "Bava Kasim Waliyullah Community Hall"
     address: string;
@@ -107,10 +107,10 @@ export const WEDDING_CONFIG: WeddingConfig = {
     homeSubtitle: "Two Souls · One Journey · Infinite Love",
   },
   event: {
-    dateDots: "5-01-2027",
-    dateBullets: "5-01-2027",
-    dateFormatted: "5 January 2027",
-    targetIsoDate: "2027-01-05T10:30:00+05:30",
+    dateDots: "10-01-2027",
+    dateBullets: "10-01-2027",
+    dateFormatted: "10 January 2027",
+    targetIsoDate: "2027-01-10T10:30:00+05:30",
     time: "10:30 AM Onwards",
     venueName: "Bava Kasim Waliyullah Community Hall",
     address: "Edalakudy (Elankadai), Nagercoil, Kanyakumari District, Tamil Nadu - 629002",
@@ -118,7 +118,7 @@ export const WEDDING_CONFIG: WeddingConfig = {
       "https://www.google.com/maps/search/?api=1&query=Bava+Kasim+Community+Hall+Edalakudy+Nagercoil",
     nikkah: {
       title: "Nikkah",
-      date: "5-01-2027",
+      date: "10-01-2027",
       time: "10:30 AM Onwards",
       venueName: "Bava Kasim Waliyullah Community Hall",
       address: "Edalakudy (Elankadai), Nagercoil, Kanyakumari District, Tamil Nadu - 629002",
@@ -127,7 +127,7 @@ export const WEDDING_CONFIG: WeddingConfig = {
     },
     reception: {
       title: "Reception & Feast",
-      date: "5-01-2027",
+      date: "10-01-2027",
       time: "12:30 PM Onwards",
       venueName: "Bava Kasim Waliyullah Community Hall",
       address: "Edalakudy (Elankadai), Nagercoil, Kanyakumari District, Tamil Nadu - 629002",
@@ -157,9 +157,9 @@ export const WEDDING_CONFIG: WeddingConfig = {
     submitText: "Send Response",
   },
   footer: {
-    heading: "See You On 5-01-2027",
+    heading: "See You On 10-01-2027",
     coupleText: "AL-SHAKHOF ♥ FATHIMA AFNAAN",
-    subheading: "5-01-2027 · The Beginning of Forever",
+    subheading: "10-01-2027 · The Beginning of Forever",
     closingBlessing: "With love & infinite blessings",
   },
   photos: {

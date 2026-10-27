@@ -51,9 +51,21 @@
 
 /* Accessibility: instant display for users preferring reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  .scroll-reveal {
+  .scroll-reveal,
+  .animate-opening-word,
+  .animate-opening-scale,
+  .animate-opening-divider,
+  .animate-opening-button,
+  .animate-smile-bounce,
+  .animate-smile-draw,
+  .animate-eye-pulse,
+  .animate-sparkle-spin,
+  .animate-sad-sway,
+  .animate-tear-drop {
     opacity: 1 !important;
     transform: none !important;
+    filter: none !important;
+    animation: none !important;
     transition: none !important;
   }
 }
@@ -70,4 +82,175 @@
 
 .animate-float-gentle {
   animation: floatGentle 2.6s ease-in-out infinite;
+}
+
+/* Opening Screen Smooth Word & Element Animations */
+@keyframes openingWordReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) translateZ(0);
+    filter: blur(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) translateZ(0);
+    filter: none;
+  }
+}
+
+@keyframes openingScaleReveal {
+  0% {
+    opacity: 0;
+    transform: scale(0.88);
+    filter: blur(3px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    filter: none;
+  }
+}
+
+@keyframes openingDividerReveal {
+  0% {
+    opacity: 0;
+    transform: scaleX(0.7);
+  }
+  100% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+@keyframes openingButtonReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(14px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-opening-word {
+  display: inline-block;
+  opacity: 0;
+  animation: openingWordReveal 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity, filter;
+  backface-visibility: hidden;
+}
+
+.animate-opening-scale {
+  opacity: 0;
+  animation: openingScaleReveal 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity, filter;
+  backface-visibility: hidden;
+}
+
+.animate-opening-divider {
+  opacity: 0;
+  animation: openingDividerReveal 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+.animate-opening-button {
+  opacity: 0;
+  animation: openingButtonReveal 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+/* RSVP Face Animations (Smiling & Sad) */
+@keyframes smileBounce {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-4px) scale(1.04);
+  }
+}
+
+.animate-smile-bounce {
+  animation: smileBounce 2.5s ease-in-out infinite;
+}
+
+@keyframes smileDraw {
+  0% {
+    stroke-dashoffset: 40;
+    opacity: 0.3;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+.animate-smile-draw {
+  stroke-dasharray: 40;
+  animation: smileDraw 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes eyePulse {
+  0%, 100% {
+    transform: scale(1);
+    transform-origin: center;
+  }
+  50% {
+    transform: scale(1.08);
+    transform-origin: center;
+  }
+}
+
+.animate-eye-pulse {
+  animation: eyePulse 2.5s ease-in-out infinite;
+}
+
+@keyframes sparkleSpin {
+  0%, 100% {
+    transform: scale(0.85) rotate(0deg);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.25) rotate(90deg);
+    opacity: 1;
+  }
+}
+
+.animate-sparkle-spin {
+  animation: sparkleSpin 2.4s ease-in-out infinite;
+}
+
+@keyframes sadSway {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(3px) rotate(-1.5deg);
+  }
+}
+
+.animate-sad-sway {
+  animation: sadSway 3s ease-in-out infinite;
+}
+
+@keyframes tearDrop {
+  0% {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+  30% {
+    opacity: 0.9;
+  }
+  80% {
+    opacity: 0.7;
+    transform: translateY(5px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+.animate-tear-drop {
+  animation: tearDrop 2.2s ease-in-out infinite;
 }

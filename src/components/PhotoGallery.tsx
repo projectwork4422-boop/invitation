@@ -109,7 +109,7 @@ export function PhotoGallery() {
                   {selectedPhoto.subtitle}
                 </p>
                 <p className="text-[11px] text-[#B89B63] font-sans uppercase tracking-widest mt-2 font-medium">
-                  AL-SHAKHOF &amp; FATHIMA AFNAAN • 5-01-2027
+                  AL-SHAKHOF &amp; FATHIMA AFNAAN • 10-01-2027
                 </p>
               </div>
             </div>

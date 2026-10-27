@@ -31,7 +31,11 @@ export default function WeddingPage() {
       setHasEntered(true);
       setIsFadingOut(true);
       if (typeof window !== "undefined") {
-        window.scrollTo({ top: 0, behavior: "instant" });
+        try {
+          window.scrollTo(0, 0);
+        } catch {
+          // Fallback if scrollTo is restricted
+        }
       }
     }, 1500);
 
