@@ -6,7 +6,7 @@ import { OrnamentalDivider } from "./IslamicOrnament";
 import { ScrollReveal } from "./ScrollReveal";
 
 export function InvitationSection() {
-  const { couple, islamicText } = WEDDING_CONFIG;
+  const { islamicText } = WEDDING_CONFIG;
 
   return (
     <section id="invitation" className="relative w-full py-24 px-4 sm:px-6 md:px-8 bg-[#EFE7D8] text-[#29251F]">
