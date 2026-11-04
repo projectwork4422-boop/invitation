@@ -67,7 +67,7 @@ export function HomeSection() {
         {/* Wedding Date in gold (#b89b63) */}
         <ScrollReveal delay={450} className="pt-2">
           <span className="font-cormorant text-2xl sm:text-3xl text-[#b89b63] font-normal italic tracking-wider drop-shadow-sm">
-            {event.dateDots} • {event.dateFormatted}
+            {event.day || "Sunday"} • {event.dateFormatted}
           </span>
         </ScrollReveal>
 

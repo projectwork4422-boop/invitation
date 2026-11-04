@@ -29,6 +29,7 @@ export interface WeddingConfig {
     homeSubtitle: string; // "Two Souls · One Journey · Infinite Love"
   };
   event: {
+    day?: string; // "Sunday"
     dateDots: string; // "10-01-2027"
     dateBullets: string; // "10-01-2027"
     dateFormatted: string; // "10 January 2027"
@@ -113,6 +114,7 @@ export const WEDDING_CONFIG: WeddingConfig = {
     homeSubtitle: "Two Souls · One Journey · Infinite Love",
   },
   event: {
+    day: "Sunday",
     dateDots: "10-01-2027",
     dateBullets: "10-01-2027",
     dateFormatted: "10 January 2027",

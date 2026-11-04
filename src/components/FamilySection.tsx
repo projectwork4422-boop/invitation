@@ -5,7 +5,8 @@ import { WEDDING_CONFIG } from "@/config/wedding";
 import { ScrollReveal } from "./ScrollReveal";
 
 export function FamilySection() {
-  const { couple } = WEDDING_CONFIG;
+  const { islamicText } = WEDDING_CONFIG;
+  const quotes = islamicText.marriageQuotes || [];
 
   return (
     <section id="couple" className="relative w-full py-20 px-4 sm:px-6 bg-[#F8F5EE] text-[#29251F]">
@@ -14,42 +15,38 @@ export function FamilySection() {
         {/* Section Header */}
         <ScrollReveal delay={100} className="text-center mb-10 sm:mb-12">
           <span className="font-sans text-xs tracking-[0.25em] uppercase text-[#7A7366] font-semibold block mb-2">
-            Blessed Union
+            Divine Guidance
           </span>
-          <h2 className="font-cormorant text-3xl sm:text-4xl text-[#29251F] font-normal tracking-wide">
-            The Couple
+          <h2 className="font-cormorant text-[19px] min-[360px]:text-[22px] min-[420px]:text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-[#29251F] font-normal tracking-wide whitespace-nowrap text-center">
+            Islamic Marriage Verses &amp; Hadith
           </h2>
         </ScrollReveal>
 
-        {/* Two-Column Couple Layout without outer box */}
+        {/* Two-Column Islamic Marriage Quotes */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12 max-w-4xl mx-auto">
-          
-          {/* Groom */}
-          <ScrollReveal delay={200}>
-            <div className="text-center flex flex-col items-center justify-center py-2 sm:py-4">
-              <span className="inline-block px-4 py-1.5 rounded-full text-[11px] font-sans tracking-widest uppercase bg-[#EDE4D3] text-[#29251F] border border-[#DDD0B9] mb-4 font-semibold transition-colors duration-200 hover:border-[#b89b63]/60">
-                Groom
-              </span>
+          {quotes.map((quote, idx) => (
+            <ScrollReveal key={idx} delay={200 + idx * 150}>
+              <div className="text-center flex flex-col items-center justify-between py-2 sm:py-4">
+                <div>
+                  <span className="font-sans text-xs tracking-[0.25em] uppercase text-[#7A7366] font-semibold block mb-4">
+                    {quote.label}
+                  </span>
 
-              <h3 className="font-cormorant text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-normal text-[#29251F] uppercase tracking-wide whitespace-nowrap">
-                {couple.groom.name}
-              </h3>
-            </div>
-          </ScrollReveal>
+                  <p lang="ar" dir="rtl" className="font-amiri text-2xl sm:text-3xl lg:text-[32px] text-[#29251F] mb-3 leading-relaxed">
+                    {quote.arabic}
+                  </p>
 
-          {/* Bride */}
-          <ScrollReveal delay={350}>
-            <div className="text-center flex flex-col items-center justify-center py-2 sm:py-4">
-              <span className="inline-block px-4 py-1.5 rounded-full text-[11px] font-sans tracking-widest uppercase bg-[#EDE4D3] text-[#29251F] border border-[#DDD0B9] mb-4 font-semibold transition-colors duration-200 hover:border-[#b89b63]/60">
-                Bride
-              </span>
+                  <p className="font-cormorant italic text-base sm:text-lg md:text-xl text-[#5F5A52] leading-relaxed max-w-md mx-auto">
+                    &ldquo;{quote.translation}&rdquo;
+                  </p>
+                </div>
 
-              <h3 className="font-cormorant text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-normal text-[#29251F] uppercase tracking-wide whitespace-nowrap">
-                {couple.bride.name}
-              </h3>
-            </div>
-          </ScrollReveal>
-
+                <span className="font-sans text-xs uppercase tracking-wider text-[#7A7366] font-semibold mt-4 block">
+                  {quote.reference}
+                </span>
+              </div>
+            </ScrollReveal>
+          ))}
         </div>
       </div>
     </section>

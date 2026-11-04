@@ -49,9 +49,12 @@ export function EventsSection() {
                 </div>
 
                 <div className="space-y-3.5 font-sans text-sm text-zinc-200">
-                  <div className="flex items-center gap-3">
-                    <Calendar className="w-4 h-4 text-[#B89B63] shrink-0 drop-shadow-sm" />
-                    <span className="text-white font-semibold drop-shadow-sm">{event.dateDots}</span>
+                  <div className="flex items-start gap-3">
+                    <Calendar className="w-4 h-4 text-[#B89B63] shrink-0 mt-0.5 drop-shadow-sm" />
+                    <div className="text-white font-semibold drop-shadow-sm leading-snug">
+                      <div>{event.dateDots}</div>
+                      <div>{event.day || "Sunday"}</div>
+                    </div>
                   </div>
 
                   <div className="flex items-center gap-3">

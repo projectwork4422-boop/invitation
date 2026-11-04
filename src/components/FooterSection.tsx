@@ -6,7 +6,12 @@ import { OrnamentalDivider } from "./IslamicOrnament";
 import { ScrollReveal } from "./ScrollReveal";
 
 export function FooterSection() {
-  const { footer, couple } = WEDDING_CONFIG;
+  const { footer, couple, event } = WEDDING_CONFIG;
+
+  const [datePart, ...restPart] = footer.subheading.includes("·")
+    ? footer.subheading.split("·")
+    : [event.dateDots, "The Beginning of Forever"];
+  const sentenceText = restPart.join("·").trim() || "The Beginning of Forever";
 
   return (
     <footer className="relative w-full py-20 px-4 sm:px-6 bg-[#EAE2D2] text-[#29251F] text-center">
@@ -29,10 +34,11 @@ export function FooterSection() {
 
           <OrnamentalDivider variant="gold" className="my-4" />
 
-          {/* “10-01-2027 · The Beginning of Forever” */}
-          <p className="font-cormorant italic text-lg sm:text-xl text-[#29251F] tracking-wider my-2">
-            {footer.subheading}
-          </p>
+          {/* Date on single line and the sentence on the next line */}
+          <div className="font-cormorant italic text-lg sm:text-xl text-[#29251F] tracking-wider my-3 leading-snug">
+            <span className="block whitespace-nowrap">{datePart.trim()}</span>
+            <span className="block whitespace-nowrap mt-1">{sentenceText}</span>
+          </div>
 
           {/* “With love & infinite blessings” */}
           <p className="font-sans text-xs tracking-widest uppercase text-[#7A7366] font-semibold mt-4">

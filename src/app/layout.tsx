@@ -48,6 +48,11 @@ export const metadata: Metadata = {
     "Bava Kasim Waliyullah Community Hall",
     "Nagercoil",
   ],
+  icons: {
+    icon: "/image/browser.jpeg",
+    shortcut: "/image/browser.jpeg",
+    apple: "/image/browser.jpeg",
+  },
   openGraph: {
     title: "AL SHAKHOF & FATHIMA AFNAAN — We Choose Forever",
     description: "10-01-2027 • Bava Kasim Waliyullah Community Hall",
@@ -72,6 +77,9 @@ export default function RootLayout({
       lang="en"
       className={`${amiri.variable} ${cormorant.variable} ${playfair.variable} ${jakarta.variable}`}
     >
+      <head>
+        <link rel="icon" href="/image/browser.jpeg" type="image/jpeg" />
+      </head>
       <body className="antialiased bg-black text-white selection:bg-white selection:text-black min-h-screen">
         {children}
       </body>
