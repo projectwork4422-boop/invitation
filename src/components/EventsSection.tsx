@@ -14,7 +14,7 @@ export function EventsSection() {
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none" aria-hidden="true">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/image/mosque.jpeg"
+          src="/image/cover%202.jpeg"
           alt="Wedding Ceremonies & Details"
           className="w-full h-full object-cover object-center filter contrast-[105%]"
         />

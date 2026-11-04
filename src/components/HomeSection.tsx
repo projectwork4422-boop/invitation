@@ -25,7 +25,7 @@ export function HomeSection() {
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none" aria-hidden="true">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/image/finger.jpeg"
+          src="/image/cover1.jpeg"
           alt="AL SHAKHOF & FATHIMA AFNAAN"
           className="w-full h-full object-cover object-center filter contrast-[105%]"
         />
