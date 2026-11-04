@@ -217,9 +217,6 @@ export function RsvpSection() {
       <div className="max-w-4xl mx-auto">
         {/* Section Header */}
         <ScrollReveal delay={100} className="text-center mb-12">
-          <span className="font-sans text-xs tracking-[0.25em] uppercase text-[#b89b63] font-semibold block mb-2 drop-shadow-sm">
-            Response
-          </span>
           <h2 className="font-cormorant text-3xl sm:text-4xl text-white font-normal tracking-wide drop-shadow-md">
             {rsvp.title}
           </h2>

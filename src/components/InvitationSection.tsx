@@ -76,6 +76,43 @@ export function InvitationSection() {
           </ScrollReveal>
         )}
 
+        {/* Additional Islamic Marriage Quotes */}
+        {islamicText.marriageQuotes && islamicText.marriageQuotes.length > 0 && (
+          <div className="pt-10 sm:pt-14 border-t border-[#E5DCCB] max-w-3xl mx-auto">
+            <ScrollReveal delay={200} className="text-center mb-8">
+              <span className="font-sans text-xs tracking-[0.25em] uppercase text-[#7A7366] font-semibold block mb-2">
+                Divine Guidance
+              </span>
+              <h4 className="font-cormorant text-2xl sm:text-3xl md:text-4xl text-[#29251F] font-normal tracking-wide">
+                Islamic Marriage Verses &amp; Hadith
+              </h4>
+            </ScrollReveal>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12 text-center max-w-3xl mx-auto">
+              {islamicText.marriageQuotes.map((quote, idx) => (
+                <ScrollReveal key={idx} delay={250 + idx * 100}>
+                  <div className="flex flex-col items-center justify-between text-center py-2 sm:py-4">
+                    <div>
+                      <span className="inline-block px-3.5 py-1 rounded-full text-[10px] font-sans tracking-widest uppercase bg-[#EDE4D3] text-[#29251F] border border-[#DDD0B9] mb-4 font-semibold transition-colors duration-200 hover:border-[#b89b63]/60">
+                        {quote.label}
+                      </span>
+                      <p lang="ar" dir="rtl" className="font-amiri text-2xl sm:text-3xl text-[#29251F] mb-3 leading-relaxed">
+                        {quote.arabic}
+                      </p>
+                      <p className="font-cormorant italic text-base sm:text-lg text-[#5F5A52] leading-relaxed max-w-sm mx-auto">
+                        &ldquo;{quote.translation}&rdquo;
+                      </p>
+                    </div>
+                    <span className="font-sans text-xs uppercase tracking-wider text-[#7A7366] font-semibold mt-4 block">
+                      {quote.reference}
+                    </span>
+                  </div>
+                </ScrollReveal>
+              ))}
+            </div>
+          </div>
+        )}
+
       </div>
     </section>
   );

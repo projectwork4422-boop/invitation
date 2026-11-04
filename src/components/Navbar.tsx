@@ -6,10 +6,11 @@ const NAV_ITEMS = [
   { label: "Home", href: "#home" },
   { label: "Invitation", href: "#invitation" },
   { label: "Countdown", href: "#countdown" },
-  { label: "Family", href: "#family" },
+  { label: "Couple", href: "#couple" },
   { label: "Events", href: "#events" },
   { label: "Venue", href: "#venue" },
   { label: "RSVP", href: "#rsvp" },
+  { label: "Responses", href: "/response" },
 ];
 
 export function Navbar() {
@@ -24,10 +25,12 @@ export function Navbar() {
   }, []);
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    e.preventDefault();
-    const target = document.querySelector(href);
-    if (target) {
-      target.scrollIntoView({ behavior: "smooth" });
+    if (href.startsWith("#")) {
+      e.preventDefault();
+      const target = document.querySelector(href);
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth" });
+      }
     }
   };
 
@@ -35,8 +38,8 @@ export function Navbar() {
     <header
       className={`sticky top-0 z-40 w-full transition-all duration-300 ${
         scrolled
-          ? "bg-[#F8F4EB]/95 backdrop-blur-md border-b border-[#E5DCCB] shadow-sm py-3"
-          : "bg-[#F8F4EB]/80 backdrop-blur-sm py-4 border-b border-[#E5DCCB]/60"
+          ? "bg-[#E0D3BC]/95 backdrop-blur-md border-b border-[#CBBCA0] shadow-md py-3"
+          : "bg-[#E8DEC8]/90 backdrop-blur-md py-4 border-b border-[#D2C3A7]"
       }`}
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between">
@@ -45,9 +48,9 @@ export function Navbar() {
         <a
           href="#home"
           onClick={(e) => handleNavClick(e, "#home")}
-          className="font-cormorant text-base sm:text-lg md:text-xl font-medium tracking-wider text-[#29251F] uppercase hover:text-[#B89B63] transition-colors"
+          className="font-cormorant text-base sm:text-lg md:text-xl font-medium tracking-wider text-[#1C1915] uppercase hover:text-[#967A3E] transition-colors"
         >
-          AL-SHAKHOF &amp; FATHIMA AFNAAN
+          AL SHAKHOF &amp; FATHIMA AFNAAN
         </a>
 
         {/* Desktop Navigation Links */}
@@ -57,7 +60,7 @@ export function Navbar() {
               key={item.label}
               href={item.href}
               onClick={(e) => handleNavClick(e, item.href)}
-              className="font-sans text-[13px] lg:text-[14px] text-[#666057] hover:text-[#B89B63] tracking-wide transition-colors duration-200 font-medium"
+              className="font-sans text-[13px] lg:text-[14px] text-[#453F36] hover:text-[#967A3E] tracking-wide transition-colors duration-200 font-medium"
             >
               {item.label}
             </a>

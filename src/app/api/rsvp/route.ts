@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { saveRsvp, checkExistingRsvp, getRsvpStats } from "@/lib/db";
+import { saveRsvp, checkExistingRsvp, getAllRsvps, deleteRsvp } from "@/lib/db";
 
 // Ensure this route handler is executed dynamically on every request in production/serverless
 export const dynamic = "force-dynamic";
@@ -107,12 +107,68 @@ export async function POST(request: NextRequest) {
 
 export async function GET() {
   try {
-    const stats = await getRsvpStats();
-    return NextResponse.json({ success: true, stats });
+    const data = await getAllRsvps();
+    return NextResponse.json({
+      success: true,
+      rsvps: data.rsvps,
+      stats: data.stats,
+      storageType: data.storageType,
+    });
   } catch (error) {
-    console.error("Error fetching RSVP stats:", error);
+    console.error("Error fetching RSVP responses:", error);
     return NextResponse.json(
-      { error: "Could not retrieve RSVP statistics." },
+      { error: "Could not retrieve RSVP responses." },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    let id = searchParams.get("id");
+
+    if (!id) {
+      try {
+        const body = await request.json();
+        id = body?.id;
+      } catch {
+        // no body
+      }
+    }
+
+    if (!id) {
+      return NextResponse.json(
+        { error: "Missing response ID to delete." },
+        { status: 400 }
+      );
+    }
+
+    const numericId = parseInt(String(id), 10);
+    if (isNaN(numericId)) {
+      return NextResponse.json(
+        { error: "Invalid response ID format." },
+        { status: 400 }
+      );
+    }
+
+    const result = await deleteRsvp(numericId);
+    if (!result.success) {
+      return NextResponse.json(
+        { error: "Failed to delete response." },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: "Response deleted successfully.",
+      storage: result.storage,
+    });
+  } catch (error) {
+    console.error("Error deleting RSVP:", error);
+    return NextResponse.json(
+      { error: "Internal server error deleting response." },
       { status: 500 }
     );
   }

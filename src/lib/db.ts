@@ -101,9 +101,10 @@ function readFallbackRsvps(): RsvpRecord[] {
 
 function writeFallbackRsvp(rsvp: RsvpRecord): RsvpRecord {
   const current = readFallbackRsvps();
+  const maxId = current.reduce((max, r) => Math.max(max, Number(r.id) || 0), 0);
   const newRecord: RsvpRecord = {
     ...rsvp,
-    id: (current[0]?.id || 0) + 1,
+    id: maxId + 1,
     created_at: new Date().toISOString(),
   };
 
@@ -379,4 +380,113 @@ export async function getRsvpStats(): Promise<{
     recentRsvps: all.slice(0, 10),
     storageType: "fallback",
   };
+}
+
+/**
+ * Retrieves all RSVP records with aggregate statistics.
+ */
+export async function getAllRsvps(): Promise<{
+  rsvps: RsvpRecord[];
+  stats: {
+    totalResponses: number;
+    attendingCount: number;
+    totalGuests: number;
+    declinedCount: number;
+  };
+  storageType: "postgres" | "fallback";
+}> {
+  const currentPool = getPool();
+
+  if (currentPool) {
+    try {
+      await initDb();
+      const countRes = await currentPool.query(`
+        SELECT 
+          COUNT(*)::int AS total,
+          COUNT(*) FILTER (WHERE attendance = 'attending')::int AS attending,
+          COALESCE(SUM(guest_count) FILTER (WHERE attendance = 'attending'), 0)::int AS guests,
+          COUNT(*) FILTER (WHERE attendance = 'declined')::int AS declined
+        FROM rsvps;
+      `);
+      const allRes = await currentPool.query(`
+        SELECT * FROM rsvps ORDER BY created_at DESC;
+      `);
+
+      const stats = countRes.rows[0];
+      return {
+        rsvps: allRes.rows || [],
+        stats: {
+          totalResponses: stats?.total || 0,
+          attendingCount: stats?.attending || 0,
+          totalGuests: stats?.guests || 0,
+          declinedCount: stats?.declined || 0,
+        },
+        storageType: "postgres",
+      };
+    } catch (err) {
+      console.warn("Could not fetch all RSVPs from postgres:", (err as Error).message);
+    }
+  }
+
+  const all = readFallbackRsvps();
+  const attending = all.filter((r) => r.attendance === "attending");
+  const declined = all.filter((r) => r.attendance === "declined");
+  const totalGuests = attending.reduce((acc, curr) => acc + (curr.guest_count || 1), 0);
+
+  return {
+    rsvps: all,
+    stats: {
+      totalResponses: all.length,
+      attendingCount: attending.length,
+      totalGuests,
+      declinedCount: declined.length,
+    },
+    storageType: "fallback",
+  };
+}
+
+/**
+ * Deletes an RSVP record by its ID.
+ */
+export async function deleteRsvp(
+  id: number
+): Promise<{ success: boolean; storage: "postgres" | "fallback" }> {
+  const currentPool = getPool();
+
+  if (currentPool) {
+    try {
+      await initDb();
+      const res = await currentPool.query("DELETE FROM rsvps WHERE id = $1 RETURNING id;", [id]);
+      if ((res.rowCount ?? 0) > 0) {
+        return { success: true, storage: "postgres" };
+      }
+    } catch (err) {
+      console.warn("PostgreSQL delete failed, falling back to local file:", (err as Error).message);
+    }
+  }
+
+  // Fallback deletion
+  const numericId = parseInt(String(id), 10);
+  const memIndex = inMemoryRsvps.findIndex((r) => r.id === numericId);
+  if (memIndex !== -1) {
+    inMemoryRsvps.splice(memIndex, 1);
+  }
+
+  try {
+    const filePath = ensureFallbackFile();
+    if (filePath && fs.existsSync(filePath)) {
+      const data = fs.readFileSync(filePath, "utf-8");
+      const current = JSON.parse(data || "[]");
+      if (Array.isArray(current)) {
+        const updated = current.filter(
+          (r: RsvpRecord) => r.id !== numericId && String(r.id) !== String(id)
+        );
+        fs.writeFileSync(filePath, JSON.stringify(updated, null, 2), "utf-8");
+      }
+    }
+    return { success: true, storage: "fallback" };
+  } catch (err) {
+    console.warn("Failed to delete RSVP from fallback file:", err);
+    return { success: false, storage: "fallback" };
+  }
 }

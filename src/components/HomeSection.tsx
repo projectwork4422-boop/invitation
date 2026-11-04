@@ -25,8 +25,8 @@ export function HomeSection() {
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none" aria-hidden="true">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/image/couple.avif"
-          alt="AL-SHAKHOF & FATHIMA AFNAAN"
+          src="/image/finger.jpeg"
+          alt="AL SHAKHOF & FATHIMA AFNAAN"
           className="w-full h-full object-cover object-center filter contrast-[105%]"
         />
         {/* Semi-transparent black overlay ~65% */}
@@ -49,7 +49,7 @@ export function HomeSection() {
           </div>
         </ScrollReveal>
 
-        {/* Couple Names: AL-SHAKHOF & FATHIMA AFNAAN in white (#FFFFFF) */}
+        {/* Couple Names: AL SHAKHOF & FATHIMA AFNAAN in white (#FFFFFF) */}
         <ScrollReveal delay={300} className="space-y-2">
           <h1 className="font-cormorant text-[36px] sm:text-[50px] md:text-[62px] lg:text-[70px] font-normal tracking-wider text-white uppercase leading-[1.1] select-none drop-shadow-md">
             {couple.groom.name}

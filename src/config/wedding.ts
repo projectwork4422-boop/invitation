@@ -11,20 +11,20 @@ export interface WeddingConfig {
     groom: {
       name: string;
       fullName: string;
-      father: string;
-      mother: string;
-      brother: string;
-      sister: string;
+      father?: string;
+      mother?: string;
+      brother?: string;
+      sister?: string;
     };
     bride: {
       name: string;
       fullName: string;
-      father: string;
-      mother: string;
-      brother: string;
-      sister: string;
+      father?: string;
+      mother?: string;
+      brother?: string;
+      sister?: string;
     };
-    combinedName: string; // "AL-SHAKHOF & FATHIMA AFNAAN"
+    combinedName: string; // "AL SHAKHOF & FATHIMA AFNAAN"
     tagline: string; // "We Choose Forever"
     homeSubtitle: string; // "Two Souls · One Journey · Infinite Love"
   };
@@ -32,8 +32,8 @@ export interface WeddingConfig {
     dateDots: string; // "10-01-2027"
     dateBullets: string; // "10-01-2027"
     dateFormatted: string; // "10 January 2027"
-    targetIsoDate: string; // "2027-01-10T10:30:00+05:30"
-    time: string; // "10:30 AM Onwards"
+    targetIsoDate: string; // "2027-01-10T11:30:00+05:30"
+    time: string; // "11:30 AM Onwards"
     venueName: string; // "Bava Kasim Waliyullah Community Hall"
     address: string;
     googleMapsUrl: string;
@@ -45,7 +45,7 @@ export interface WeddingConfig {
       address: string;
       googleMapsUrl: string;
     };
-    reception: {
+    reception?: {
       title: string;
       date: string;
       time: string;
@@ -64,6 +64,12 @@ export interface WeddingConfig {
       translation: string;
       reference: string;
     };
+    marriageQuotes?: Array<{
+      arabic: string;
+      translation: string;
+      reference: string;
+      label: string;
+    }>;
   };
   rsvp: {
     title: string;
@@ -87,8 +93,8 @@ export interface WeddingConfig {
 export const WEDDING_CONFIG: WeddingConfig = {
   couple: {
     groom: {
-      name: "AL-SHAKHOF",
-      fullName: "AL-SHAKHOF",
+      name: "AL SHAKHOF",
+      fullName: "AL SHAKHOF",
       father: "Not Updated",
       mother: "Not Updated",
       brother: "Not Updated",
@@ -102,7 +108,7 @@ export const WEDDING_CONFIG: WeddingConfig = {
       brother: "Not Updated",
       sister: "Not Updated",
     },
-    combinedName: "AL-SHAKHOF & FATHIMA AFNAAN",
+    combinedName: "AL SHAKHOF & FATHIMA AFNAAN",
     tagline: "We Choose Forever",
     homeSubtitle: "Two Souls · One Journey · Infinite Love",
   },
@@ -110,8 +116,8 @@ export const WEDDING_CONFIG: WeddingConfig = {
     dateDots: "10-01-2027",
     dateBullets: "10-01-2027",
     dateFormatted: "10 January 2027",
-    targetIsoDate: "2027-01-10T10:30:00+05:30",
-    time: "10:30 AM Onwards",
+    targetIsoDate: "2027-01-10T11:30:00+05:30",
+    time: "11:30 AM Onwards",
     venueName: "Bava Kasim Waliyullah Community Hall",
     address: "Edalakudy (Elankadai), Nagercoil, Kanyakumari District, Tamil Nadu - 629002",
     googleMapsUrl:
@@ -119,7 +125,7 @@ export const WEDDING_CONFIG: WeddingConfig = {
     nikkah: {
       title: "Nikkah",
       date: "10-01-2027",
-      time: "10:30 AM Onwards",
+      time: "11:30 AM Onwards",
       venueName: "Bava Kasim Waliyullah Community Hall",
       address: "Edalakudy (Elankadai), Nagercoil, Kanyakumari District, Tamil Nadu - 629002",
       googleMapsUrl:
@@ -148,6 +154,20 @@ export const WEDDING_CONFIG: WeddingConfig = {
         "And among His signs is that He created for you mates from among yourselves, that you may dwell in tranquility with them, and He has put love and mercy between your hearts.",
       reference: "Surah Ar-Rum [30:21]",
     },
+    marriageQuotes: [
+      {
+        arabic: "لَمْ نَرَ لِلْمُتَحَابَّيْنِ مِثْلَ النِّكَاحِ",
+        translation: "There is nothing like marriage for two who love one another.",
+        reference: "Sunan Ibn Majah [1847]",
+        label: "Prophetic Sunnah",
+      },
+      {
+        arabic: "رَبَّنَا هَبْ لَنَا مِنْ أَزْوَاجِنَا وَذُرِّيَّاتِنَا قُرَّةَ أَعْيُنٍ",
+        translation: "Our Lord! Grant us in our spouses the joy and comfort of our eyes.",
+        reference: "Surah Al-Furqan [25:74]",
+        label: "Blessed Dua",
+      },
+    ],
   },
   rsvp: {
     title: "Will You Join Us?",
@@ -158,7 +178,7 @@ export const WEDDING_CONFIG: WeddingConfig = {
   },
   footer: {
     heading: "See You On 10-01-2027",
-    coupleText: "AL-SHAKHOF ♥ FATHIMA AFNAAN",
+    coupleText: "AL SHAKHOF ♥ FATHIMA AFNAAN",
     subheading: "10-01-2027 · The Beginning of Forever",
     closingBlessing: "With love & infinite blessings",
   },

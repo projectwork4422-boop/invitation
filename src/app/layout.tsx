@@ -36,11 +36,11 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "AL-SHAKHOF & FATHIMA AFNAAN | Wedding Invitation",
+  title: "AL SHAKHOF & FATHIMA AFNAAN | Wedding Invitation",
   description:
-    "Two Souls · One Journey · Infinite Love. Join us in celebrating the Nikāh of AL-SHAKHOF & FATHIMA AFNAAN on 10-01-2027 at Bava Kasim Waliyullah Community Hall.",
+    "Two Souls · One Journey · Infinite Love. Join us in celebrating the Nikāh of AL SHAKHOF & FATHIMA AFNAAN on 10-01-2027 at Bava Kasim Waliyullah Community Hall.",
   keywords: [
-    "AL-SHAKHOF",
+    "AL SHAKHOF",
     "FATHIMA AFNAAN",
     "Wedding Invitation",
     "Muslim Wedding",
@@ -49,7 +49,7 @@ export const metadata: Metadata = {
     "Nagercoil",
   ],
   openGraph: {
-    title: "AL-SHAKHOF & FATHIMA AFNAAN — We Choose Forever",
+    title: "AL SHAKHOF & FATHIMA AFNAAN — We Choose Forever",
     description: "10-01-2027 • Bava Kasim Waliyullah Community Hall",
     type: "website",
   },

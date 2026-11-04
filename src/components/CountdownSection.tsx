@@ -79,7 +79,7 @@ export function CountdownSection() {
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none" aria-hidden="true">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/image/couple%203.avif"
+          src="/image/background.jpeg"
           alt="Wedding Countdown"
           className="w-full h-full object-cover object-center filter contrast-[105%]"
         />

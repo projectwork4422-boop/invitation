@@ -8,7 +8,6 @@ import { CountdownSection } from "./CountdownSection";
 import { FamilySection } from "./FamilySection";
 import { EventsSection } from "./EventsSection";
 import { VenueSection } from "./VenueSection";
-import { PhotoGallery } from "./PhotoGallery";
 import { RsvpSection } from "./RsvpSection";
 import { FooterSection } from "./FooterSection";
 
@@ -37,10 +36,7 @@ export function MainInvitation() {
         {/* 8. THE VENUE */}
         <VenueSection />
 
-        {/* 9. PHOTO GALLERY */}
-        <PhotoGallery />
-
-        {/* 10. RSVP */}
+        {/* 9. RSVP */}
         <RsvpSection />
 
         {/* 11. CLOSING QUOTE & FOOTER */}

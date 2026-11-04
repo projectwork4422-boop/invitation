@@ -35,9 +35,21 @@ export function OpeningScreen({ onEnter, isEntering = false }: OpeningScreenProp
   const buttonDelay = dateDelay + 150; // ~2190ms
 
   return (
-    <div className="relative min-h-screen w-full flex items-center justify-center p-4 sm:p-6 md:p-8 bg-black text-white">
+    <div className="relative min-h-screen w-full flex items-center justify-center p-4 sm:p-6 md:p-8 bg-black text-white overflow-hidden">
+      {/* Background Image with Dark Overlay */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/image/writing.jpeg"
+          alt="AL SHAKHOF & FATHIMA AFNAAN"
+          className="w-full h-full object-cover object-center filter contrast-[105%]"
+        />
+        {/* Semi-transparent black overlay ~65% opacity */}
+        <div className="absolute inset-0 bg-black/65 backdrop-blur-[0.5px]" />
+      </div>
+
       {/* Editorial Centered Invitation Content */}
-      <div className="relative w-full max-w-lg mx-auto py-6 sm:py-10 text-center">
+      <div className="relative z-10 w-full max-w-lg mx-auto py-6 sm:py-10 text-center">
         
         {/* 1. Arabic Bismillah - Words appear one by one right-to-left */}
         <div className="my-5">
@@ -100,7 +112,7 @@ export function OpeningScreen({ onEnter, isEntering = false }: OpeningScreenProp
           <OrnamentalDivider variant="white" className="my-5 opacity-40" />
         </div>
 
-        {/* 5. Couple Names in UPPERCASE: AL-SHAKHOF & FATHIMA AFNAAN */}
+        {/* 5. Couple Names in UPPERCASE: AL SHAKHOF & FATHIMA AFNAAN */}
         <div className="my-6 space-y-2">
           {/* Groom Name */}
           <h2 className="font-cormorant text-3xl sm:text-4xl md:text-5xl font-normal tracking-wider text-white uppercase leading-tight">

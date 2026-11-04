@@ -26,7 +26,7 @@ export function VenueSection() {
           <div className="p-8 sm:p-10 rounded-3xl bg-[#FFFFFF] border border-[#E5DCCB] warm-card-shadow text-center hover:border-[#B89B63] hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
             <div className="inline-block mb-3">
               <span className="font-sans text-[11px] uppercase tracking-widest text-[#29251F] font-semibold bg-[#EDE4D3] px-3.5 py-1 rounded-full border border-[#DDD0B9] transition-colors duration-200 hover:border-[#B89B63]/60">
-                Wedding &amp; Reception Venue
+                Wedding Venue
               </span>
             </div>
 
