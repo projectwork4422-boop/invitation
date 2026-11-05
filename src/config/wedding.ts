@@ -33,8 +33,8 @@ export interface WeddingConfig {
     dateDots: string; // "10-01-2027"
     dateBullets: string; // "10-01-2027"
     dateFormatted: string; // "10 January 2027"
-    targetIsoDate: string; // "2027-01-10T11:30:00+05:30"
-    time: string; // "11:30 AM Onwards"
+    targetIsoDate: string; // "2027-01-10T11:00:00+05:30"
+    time: string; // "11:00 AM Onwards"
     venueName: string; // "Bava Kasim Waliyullah Community Hall"
     address: string;
     googleMapsUrl: string;
@@ -118,8 +118,8 @@ export const WEDDING_CONFIG: WeddingConfig = {
     dateDots: "10-01-2027",
     dateBullets: "10-01-2027",
     dateFormatted: "10 January 2027",
-    targetIsoDate: "2027-01-10T11:30:00+05:30",
-    time: "11:30 AM Onwards",
+    targetIsoDate: "2027-01-10T11:00:00+05:30",
+    time: "11:00 AM Onwards",
     venueName: "Bava Kasim Waliyullah Community Hall",
     address: "Edalakudy (Elankadai), Nagercoil, Kanyakumari District, Tamil Nadu - 629002",
     googleMapsUrl:
@@ -127,7 +127,7 @@ export const WEDDING_CONFIG: WeddingConfig = {
     nikkah: {
       title: "Nikkah",
       date: "10-01-2027",
-      time: "11:30 AM Onwards",
+      time: "11:00 AM Onwards",
       venueName: "Bava Kasim Waliyullah Community Hall",
       address: "Edalakudy (Elankadai), Nagercoil, Kanyakumari District, Tamil Nadu - 629002",
       googleMapsUrl:
@@ -148,7 +148,7 @@ export const WEDDING_CONFIG: WeddingConfig = {
     bismillahEnglish: "In the name of Allah, the Most Gracious, the Most Merciful",
     invitationHeading: "We warmly invite you",
     invitationMessage:
-      "to join us as we celebrate the sacred union of our lives in the holy bond of Nikāh. Your gracious presence, cherished love, and heartfelt duas will bring immense joy and barakah to our new beginning.",
+      "to join us as we celebrate the sacred union of our lives in the holy bond of Nikkah. Your gracious presence, cherished love, and heartfelt duas will bring immense joy and barakah to our new beginning.",
     blessingQuote: {
       arabic:
         "وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً",

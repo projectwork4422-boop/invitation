@@ -338,7 +338,7 @@ export default function ResponsesPage() {
               isDark ? "text-zinc-400" : "text-zinc-600"
             }`}
           >
-            Celebration of Nikāh on {event.dateFormatted} at {event.venueName}
+            Celebration of Nikkah on {event.dateFormatted} at {event.venueName}
           </p>
         </div>
 

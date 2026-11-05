@@ -49,7 +49,7 @@ export function FooterSection() {
       </ScrollReveal>
 
       <ScrollReveal delay={300} className="mt-8 text-center text-[11px] text-[#8C8275] font-sans tracking-wider">
-        In the sacred bond of Nikāh • We warmly anticipate your presence
+        In the sacred bond of Nikkah • We warmly anticipate your presence
       </ScrollReveal>
     </footer>
   );

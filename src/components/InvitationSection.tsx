@@ -36,7 +36,7 @@ export function InvitationSection() {
             {islamicText.invitationHeading}
           </h3>
 
-          {/* Nikah Invitation Message */}
+          {/* Nikkah Invitation Message */}
           <p className="font-sans text-lg sm:text-xl md:text-[22px] text-[#5F5A52] leading-[1.8] sm:leading-[1.85] font-light max-w-3xl mx-auto">
             {islamicText.invitationMessage}
           </p>

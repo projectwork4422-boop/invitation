@@ -38,13 +38,13 @@ const jakarta = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   title: "AL SHAKHOF & FATHIMA AFNAAN | Wedding Invitation",
   description:
-    "Two Souls · One Journey · Infinite Love. Join us in celebrating the Nikāh of AL SHAKHOF & FATHIMA AFNAAN on 10-01-2027 at Bava Kasim Waliyullah Community Hall.",
+    "Two Souls · One Journey · Infinite Love. Join us in celebrating the Nikkah of AL SHAKHOF & FATHIMA AFNAAN on 10-01-2027 at Bava Kasim Waliyullah Community Hall.",
   keywords: [
     "AL SHAKHOF",
     "FATHIMA AFNAAN",
     "Wedding Invitation",
     "Muslim Wedding",
-    "Nikah",
+    "Nikkah",
     "Bava Kasim Waliyullah Community Hall",
     "Nagercoil",
   ],
