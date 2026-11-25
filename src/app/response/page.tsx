@@ -24,6 +24,57 @@ import {
 import { WEDDING_CONFIG } from "@/config/wedding";
 import { RsvpRecord } from "@/lib/db";
 
+const STORAGE_KEY = "wedding_rsvps";
+
+function getLocalRsvps(): RsvpRecord[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveLocalRsvps(rsvps: RsvpRecord[]) {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(rsvps));
+  } catch (err) {
+    console.warn("Failed to persist RSVPs locally:", err);
+  }
+}
+
+function mergeResponses(
+  serverList: RsvpRecord[],
+  localList: RsvpRecord[]
+): RsvpRecord[] {
+  const mergedMap = new Map<string, RsvpRecord>();
+
+  const addRecord = (item: RsvpRecord) => {
+    if (!item || !item.guest_name) return;
+    const nameKey = (item.guest_name || "").toLowerCase().trim();
+    const uniqueKey = item.id !== undefined && item.id !== null
+      ? `id_${item.id}`
+      : `comp_${nameKey}_${item.attendance}_${item.created_at || ""}`;
+
+    if (!mergedMap.has(uniqueKey)) {
+      mergedMap.set(uniqueKey, item);
+    }
+  };
+
+  serverList.forEach(addRecord);
+  localList.forEach(addRecord);
+
+  return Array.from(mergedMap.values()).sort((a, b) => {
+    const timeA = a.created_at ? new Date(a.created_at).getTime() : 0;
+    const timeB = b.created_at ? new Date(b.created_at).getTime() : 0;
+    if (timeA !== timeB) return timeB - timeA;
+    return (Number(b.id) || 0) - (Number(a.id) || 0);
+  });
+}
+
 export default function ResponsesPage() {
   const { couple, event } = WEDDING_CONFIG;
 
@@ -42,20 +93,37 @@ export default function ResponsesPage() {
   const [actionToast, setActionToast] = useState<string | null>(null);
 
   const confirmDelete = async () => {
-    if (!deleteTarget || deleteTarget.id === undefined) return;
+    if (!deleteTarget) return;
     setIsDeleting(true);
     try {
-      const res = await fetch(`/api/rsvp?id=${deleteTarget.id}`, {
-        method: "DELETE",
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || "Failed to delete response");
+      const targetId = deleteTarget.id;
+      if (targetId !== undefined) {
+        const res = await fetch(`/api/rsvp?id=${targetId}`, {
+          method: "DELETE",
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.error || "Failed to delete response");
+        }
       }
 
       const deletedName = deleteTarget.guest_name;
-      // Immediately remove from UI state
-      setResponses((prev) => prev.filter((r) => r.id !== deleteTarget.id));
+      // Immediately remove from UI state and local storage
+      setResponses((prev) => {
+        const updated = prev.filter((r) => {
+          if (targetId !== undefined && r.id === targetId) return false;
+          if (
+            (r.guest_name || "").toLowerCase().trim() ===
+              (deleteTarget.guest_name || "").toLowerCase().trim() &&
+            r.created_at === deleteTarget.created_at
+          ) {
+            return false;
+          }
+          return true;
+        });
+        saveLocalRsvps(updated);
+        return updated;
+      });
       setDeleteTarget(null);
       setActionToast(`Successfully deleted response from "${deletedName}".`);
       setTimeout(() => {
@@ -75,11 +143,40 @@ export default function ResponsesPage() {
       const res = await fetch("/api/rsvp", { cache: "no-store" });
       if (!res.ok) throw new Error("Failed to load responses");
       const data = await res.json();
-      setResponses(data.rsvps || []);
+      const serverList: RsvpRecord[] = data.rsvps || [];
+      const localList = getLocalRsvps();
+
+      const merged = mergeResponses(serverList, localList);
+      setResponses(merged);
+      saveLocalRsvps(merged);
       setError(null);
+
+      // If local storage has any pending responses not yet on the server, sync them
+      const serverIds = new Set(serverList.map((r) => String(r.id)));
+      const missingOnServer = localList.filter(
+        (r) => r.id === undefined || !serverIds.has(String(r.id))
+      );
+      if (missingOnServer.length > 0) {
+        try {
+          await fetch("/api/rsvp", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ sync: true, rsvps: missingOnServer }),
+          });
+        } catch {
+          // Sync failure is non-fatal; local responses remain safely preserved
+        }
+      }
     } catch (err) {
       console.error(err);
-      setError("Unable to load responses. Please check connection and try again.");
+      // Fallback gracefully to locally persisted responses
+      const localList = getLocalRsvps();
+      if (localList.length > 0) {
+        setResponses(localList);
+        setError(null);
+      } else {
+        setError("Unable to load responses. Please check connection and try again.");
+      }
     } finally {
       setLoading(false);
       setIsRefreshing(false);
@@ -87,6 +184,21 @@ export default function ResponsesPage() {
   };
 
   useEffect(() => {
+    // 1. Clear any legacy blacklist key from earlier versions
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.removeItem("wedding_deleted_rsvp_ids");
+      } catch {}
+    }
+
+    // 2. Instantly load from localStorage on mount so responses are immediately visible
+    const localList = getLocalRsvps();
+    if (localList.length > 0) {
+      setResponses(localList);
+      setLoading(false);
+    }
+
+    // 3. Fetch fresh responses from server and merge
     fetchResponses();
   }, []);
 

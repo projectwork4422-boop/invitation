@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { saveRsvp, checkExistingRsvp, getAllRsvps, deleteRsvp } from "@/lib/db";
+import { saveRsvp, checkExistingRsvp, getAllRsvps, deleteRsvp, syncRsvps } from "@/lib/db";
 
 // Ensure this route handler is executed dynamically on every request in production/serverless
 export const dynamic = "force-dynamic";
@@ -14,6 +14,16 @@ export async function POST(request: NextRequest) {
         { error: "Invalid request payload. Please submit valid form data." },
         { status: 400 }
       );
+    }
+
+    // Support client-side persistence synchronization across serverless container recycles
+    if (body?.sync === true && Array.isArray(body?.rsvps)) {
+      const syncResult = await syncRsvps(body.rsvps);
+      return NextResponse.json({
+        success: true,
+        message: `Synced ${syncResult.count} responses.`,
+        rsvps: syncResult.rsvps,
+      });
     }
 
     const { guest_name, attendance, guest_count, message } = body || {};

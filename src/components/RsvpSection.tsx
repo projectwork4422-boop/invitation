@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { WEDDING_CONFIG } from "@/config/wedding";
 import { Send, AlertCircle } from "lucide-react";
 import { ScrollReveal } from "./ScrollReveal";
+import { RsvpRecord } from "@/lib/db";
 
 function SmilingFaceAnimation() {
   return (
@@ -199,6 +200,38 @@ export function RsvpSection() {
             ? `Alhamdulillah! Thank you, ${trimmedName}. We eagerly look forward to celebrating with you!`
             : "Please remember us in your duas and pray for our marriage.",
         });
+
+        // Persist submitted RSVP to local storage to guarantee permanent availability on Response page
+        if (typeof window !== "undefined") {
+          try {
+            const STORAGE_KEY = "wedding_rsvps";
+            const newRecord = data.rsvp || {
+              id: Date.now(),
+              guest_name: trimmedName,
+              attendance,
+              guest_count: attendance === "attending" ? guestCount : 0,
+              message: wishes.trim() || null,
+              created_at: new Date().toISOString(),
+            };
+            const existingRaw = localStorage.getItem(STORAGE_KEY);
+            const existing = existingRaw ? JSON.parse(existingRaw) : [];
+            const list: RsvpRecord[] = Array.isArray(existing) ? existing : [];
+            const filtered = list.filter(
+              (r: RsvpRecord) =>
+                !(
+                  (newRecord.id !== undefined && r.id === newRecord.id) ||
+                  ((r.guest_name || "").toLowerCase().trim() === trimmedName.toLowerCase() &&
+                    r.attendance === attendance &&
+                    (r.message || "") === (newRecord.message || ""))
+                )
+            );
+            filtered.unshift(newRecord);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
+          } catch (storageErr) {
+            console.warn("Could not cache submitted RSVP locally:", storageErr);
+          }
+        }
+
         setGuestName("");
         setWishes("");
       }

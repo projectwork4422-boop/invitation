@@ -10,7 +10,6 @@ const NAV_ITEMS = [
   { label: "Events", href: "#events" },
   { label: "Venue", href: "#venue" },
   { label: "RSVP", href: "#rsvp" },
-  { label: "Responses", href: "/response" },
 ];
 
 export function Navbar() {

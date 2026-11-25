@@ -104,17 +104,41 @@ function writeFallbackRsvp(rsvp: RsvpRecord): RsvpRecord {
   const maxId = current.reduce((max, r) => Math.max(max, Number(r.id) || 0), 0);
   const newRecord: RsvpRecord = {
     ...rsvp,
-    id: maxId + 1,
-    created_at: new Date().toISOString(),
+    id: rsvp.id !== undefined ? rsvp.id : maxId + 1,
+    created_at: rsvp.created_at || new Date().toISOString(),
   };
 
-  // Always mirror in memory for immediate consistency
-  inMemoryRsvps.unshift(newRecord);
+  // Prevent duplicate entries in memory or file
+  const existingIdx = current.findIndex(
+    (r) =>
+      (newRecord.id !== undefined && r.id === newRecord.id) ||
+      ((r.guest_name || "").toLowerCase().trim() === (newRecord.guest_name || "").toLowerCase().trim() &&
+        r.attendance === newRecord.attendance &&
+        r.created_at === newRecord.created_at)
+  );
+
+  if (existingIdx !== -1) {
+    current[existingIdx] = newRecord;
+  } else {
+    current.unshift(newRecord);
+  }
+
+  const memIdx = inMemoryRsvps.findIndex(
+    (r) =>
+      (newRecord.id !== undefined && r.id === newRecord.id) ||
+      ((r.guest_name || "").toLowerCase().trim() === (newRecord.guest_name || "").toLowerCase().trim() &&
+        r.attendance === newRecord.attendance &&
+        r.created_at === newRecord.created_at)
+  );
+  if (memIdx !== -1) {
+    inMemoryRsvps[memIdx] = newRecord;
+  } else {
+    inMemoryRsvps.unshift(newRecord);
+  }
 
   try {
     const filePath = ensureFallbackFile();
     if (filePath) {
-      current.unshift(newRecord);
       fs.writeFileSync(filePath, JSON.stringify(current, null, 2), "utf-8");
     }
   } catch (err) {
@@ -247,6 +271,8 @@ export async function saveRsvp(data: {
   ip_address?: string | null;
 }): Promise<{ success: boolean; rsvp: RsvpRecord; storage: "postgres" | "fallback" }> {
   const currentPool = getPool();
+  let savedRecord: RsvpRecord | null = null;
+  let storage: "postgres" | "fallback" = "fallback";
 
   if (currentPool) {
     try {
@@ -266,23 +292,26 @@ export async function saveRsvp(data: {
         ]
       );
       if (result.rows && result.rows.length > 0) {
-        return { success: true, rsvp: result.rows[0], storage: "postgres" };
+        savedRecord = result.rows[0];
+        storage = "postgres";
       }
     } catch (err) {
       console.warn("PostgreSQL insert failed, saving to fallback storage:", (err as Error).message);
     }
   }
 
-  // Safe fallback storage (writes to /tmp on serverless or data directory on local)
-  const saved = writeFallbackRsvp({
-    guest_name: data.guest_name.trim(),
-    attendance: data.attendance,
-    guest_count: data.attendance === "attending" ? Math.max(1, data.guest_count) : 0,
-    message: data.message ? data.message.trim() : null,
-    ip_address: data.ip_address || null,
-  });
+  // Always mirror in fallback storage so both stores stay perfectly synchronized
+  const fallbackRecord = writeFallbackRsvp(
+    savedRecord || {
+      guest_name: data.guest_name.trim(),
+      attendance: data.attendance,
+      guest_count: data.attendance === "attending" ? Math.max(1, data.guest_count) : 0,
+      message: data.message ? data.message.trim() : null,
+      ip_address: data.ip_address || null,
+    }
+  );
 
-  return { success: true, rsvp: saved, storage: "fallback" };
+  return { success: true, rsvp: savedRecord || fallbackRecord, storage };
 }
 
 /**
@@ -396,39 +425,49 @@ export async function getAllRsvps(): Promise<{
   storageType: "postgres" | "fallback";
 }> {
   const currentPool = getPool();
+  let postgresRsvps: RsvpRecord[] = [];
+  let storageType: "postgres" | "fallback" = "fallback";
 
   if (currentPool) {
     try {
       await initDb();
-      const countRes = await currentPool.query(`
-        SELECT 
-          COUNT(*)::int AS total,
-          COUNT(*) FILTER (WHERE attendance = 'attending')::int AS attending,
-          COALESCE(SUM(guest_count) FILTER (WHERE attendance = 'attending'), 0)::int AS guests,
-          COUNT(*) FILTER (WHERE attendance = 'declined')::int AS declined
-        FROM rsvps;
-      `);
       const allRes = await currentPool.query(`
         SELECT * FROM rsvps ORDER BY created_at DESC;
       `);
-
-      const stats = countRes.rows[0];
-      return {
-        rsvps: allRes.rows || [],
-        stats: {
-          totalResponses: stats?.total || 0,
-          attendingCount: stats?.attending || 0,
-          totalGuests: stats?.guests || 0,
-          declinedCount: stats?.declined || 0,
-        },
-        storageType: "postgres",
-      };
+      postgresRsvps = allRes.rows || [];
+      storageType = "postgres";
     } catch (err) {
       console.warn("Could not fetch all RSVPs from postgres:", (err as Error).message);
     }
   }
 
-  const all = readFallbackRsvps();
+  const fallbackRsvps = readFallbackRsvps();
+
+  // Unified deduplication combining both PostgreSQL and Fallback store records
+  const recordMap = new Map<string, RsvpRecord>();
+
+  const addRecord = (r: RsvpRecord) => {
+    if (!r || !r.guest_name) return;
+    const nameKey = (r.guest_name || "").toLowerCase().trim();
+    const key = r.id !== undefined
+      ? `id_${r.id}`
+      : `comp_${nameKey}_${r.attendance}_${r.created_at || ""}`;
+    if (!recordMap.has(key)) {
+      recordMap.set(key, r);
+    }
+  };
+
+  // Add postgres first, then fallback
+  postgresRsvps.forEach(addRecord);
+  fallbackRsvps.forEach(addRecord);
+
+  const all = Array.from(recordMap.values()).sort((a, b) => {
+    const timeA = a.created_at ? new Date(a.created_at).getTime() : 0;
+    const timeB = b.created_at ? new Date(b.created_at).getTime() : 0;
+    if (timeA !== timeB) return timeB - timeA;
+    return (Number(b.id) || 0) - (Number(a.id) || 0);
+  });
+
   const attending = all.filter((r) => r.attendance === "attending");
   const declined = all.filter((r) => r.attendance === "declined");
   const totalGuests = attending.reduce((acc, curr) => acc + (curr.guest_count || 1), 0);
@@ -441,7 +480,7 @@ export async function getAllRsvps(): Promise<{
       totalGuests,
       declinedCount: declined.length,
     },
-    storageType: "fallback",
+    storageType,
   };
 }
 
@@ -452,20 +491,21 @@ export async function deleteRsvp(
   id: number
 ): Promise<{ success: boolean; storage: "postgres" | "fallback" }> {
   const currentPool = getPool();
+  let deletedFromPg = false;
 
   if (currentPool) {
     try {
       await initDb();
       const res = await currentPool.query("DELETE FROM rsvps WHERE id = $1 RETURNING id;", [id]);
       if ((res.rowCount ?? 0) > 0) {
-        return { success: true, storage: "postgres" };
+        deletedFromPg = true;
       }
     } catch (err) {
       console.warn("PostgreSQL delete failed, falling back to local file:", (err as Error).message);
     }
   }
 
-  // Fallback deletion
+  // Always delete from fallback store as well to maintain perfect consistency
   const numericId = parseInt(String(id), 10);
   const memIndex = inMemoryRsvps.findIndex((r) => r.id === numericId);
   if (memIndex !== -1) {
@@ -484,9 +524,94 @@ export async function deleteRsvp(
         fs.writeFileSync(filePath, JSON.stringify(updated, null, 2), "utf-8");
       }
     }
-    return { success: true, storage: "fallback" };
   } catch (err) {
     console.warn("Failed to delete RSVP from fallback file:", err);
-    return { success: false, storage: "fallback" };
   }
+
+  return { success: true, storage: deletedFromPg ? "postgres" : "fallback" };
+}
+
+/**
+ * Synchronizes a list of RSVP records into the persistent store (PostgreSQL and/or fallback).
+ * Used to ensure that client-persisted responses are preserved across serverless container recycles.
+ */
+export async function syncRsvps(
+  incoming: RsvpRecord[]
+): Promise<{ success: boolean; rsvps: RsvpRecord[]; count: number }> {
+  if (!Array.isArray(incoming) || incoming.length === 0) {
+    const all = await getAllRsvps();
+    return { success: true, rsvps: all.rsvps, count: 0 };
+  }
+
+  const currentPool = getPool();
+  let addedCount = 0;
+
+  if (currentPool) {
+    try {
+      await initDb();
+      for (const item of incoming) {
+        if (!item.guest_name) continue;
+        const checkRes = await currentPool.query(
+          `SELECT id FROM rsvps WHERE LOWER(guest_name) = LOWER($1) AND attendance = $2 LIMIT 1;`,
+          [item.guest_name.trim(), item.attendance]
+        );
+        if ((checkRes.rowCount ?? 0) === 0) {
+          await currentPool.query(
+            `INSERT INTO rsvps (guest_name, attendance, guest_count, message, ip_address, created_at)
+             VALUES ($1, $2, $3, $4, $5, $6);`,
+            [
+              item.guest_name.trim(),
+              item.attendance,
+              item.attendance === "attending" ? Math.max(1, item.guest_count || 1) : 0,
+              item.message ? item.message.trim() : null,
+              item.ip_address || null,
+              item.created_at || new Date().toISOString(),
+            ]
+          );
+          addedCount++;
+        }
+      }
+    } catch (err) {
+      console.warn("PostgreSQL sync error, continuing with fallback:", (err as Error).message);
+    }
+  }
+
+  // Fallback sync
+  const current = readFallbackRsvps();
+  const existingSet = new Set(
+    current.map(
+      (r) =>
+        `${(r.guest_name || "").toLowerCase().trim()}_${r.attendance}_${r.message || ""}`
+    )
+  );
+
+  let nextId = current.reduce((max, r) => Math.max(max, Number(r.id) || 0), 0) + 1;
+
+  for (const item of incoming) {
+    if (!item.guest_name) continue;
+    const key = `${item.guest_name.toLowerCase().trim()}_${item.attendance}_${item.message || ""}`;
+    if (!existingSet.has(key)) {
+      const recordWithId: RsvpRecord = {
+        ...item,
+        id: item.id && !current.some((r) => r.id === item.id) ? item.id : nextId++,
+        created_at: item.created_at || new Date().toISOString(),
+      };
+      current.unshift(recordWithId);
+      inMemoryRsvps.unshift(recordWithId);
+      existingSet.add(key);
+      addedCount++;
+    }
+  }
+
+  try {
+    const filePath = ensureFallbackFile();
+    if (filePath) {
+      fs.writeFileSync(filePath, JSON.stringify(current, null, 2), "utf-8");
+    }
+  } catch (err) {
+    console.warn("Could not write synced RSVPs to fallback file:", err);
+  }
+
+  const updatedAll = await getAllRsvps();
+  return { success: true, rsvps: updatedAll.rsvps, count: addedCount };
 }
